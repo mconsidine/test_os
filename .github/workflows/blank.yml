@@ -1,16 +1,76 @@
 name: Build Armbian for RockPi-4B+
 
 on:
+  #pull_request:
+  #push:
+  #  tags:
+  #    - '*.*.*'
+  #  branches:
+  #    - main  
   workflow_dispatch: # Allows manual triggering of the workflow
+    tags:
+      - '*.*.*'
+    branches:
+      - main
 
 jobs:
   build-armbian:
     runs-on: ubuntu-latest
 
+    env:
+      # Get the tag, if any
+      TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
+      
+      if [ -n "$TAG" ]; then
+        echo "APP_VERSION=$TAG" >> $GITHUB_ENV
+        echo "IMGFILENAME=sunscan_os_$TAG" >> $GITHUB_ENV
+      else
+        BRANCH=$(git rev-parse --abbrev-ref HEAD)
+        COMMIT=$(git rev-parse --short HEAD)
+        echo "APP_VERSION=${BRANCH}_${COMMIT}" >> $GITHUB_ENV
+        echo "IMGFILENAME=sunscan_os_${BRANCH}_${COMMIT}" >> $GITHUB_ENV
+      fi
+
+      KEYBOARD_KEYMAP: us
+      KEYBOARD_LAYOUT: us
+      LOCALE: en_US.UTF-8
+      ROOTPWD: rockpi
+      FIRST_USER_NAME: admin
+      FIRST_USER_PASS: sunscan
+      TZ: America/New_York
+      #STAGE_LIST: debootstrap,rootfs,overlay,install,finalize
+      STAGE_LIST: stage0 stage1 stage2 ./custom-gen-sunscan
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      #- name: Determine version
+      #  id: vars
+      #  run: |
+      #    # Get the tag, if any
+      #    TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
+      #    
+      #    if [ -n "$TAG" ]; then
+      #      echo "APP_VERSION=$TAG" >> $GITHUB_ENV
+      #      echo "IMGFILENAME=sunscan_os_$TAG" >> $GITHUB_ENV
+      #    else
+      #      BRANCH=$(git rev-parse --abbrev-ref HEAD)
+      #      COMMIT=$(git rev-parse --short HEAD)
+      #      echo "APP_VERSION=${BRANCH}_${COMMIT}" >> $GITHUB_ENV
+      #      echo "IMGFILENAME=sunscan_os_${BRANCH}_${COMMIT}" >> $GITHUB_ENV
+      #    fi
+      #- name: Get SunScan setup
+      #  run: |
+      #    mkdir -p pi-gen-sunscan/01-prepare-repo
+      #    cat > pi-gen-sunscan/01-prepare-repo/00-run.sh <<-EOF
+      #    #!/bin/bash
+      #    git clone ${{ github.server_url }}/${{ github.repository }}.git --branch ${{ github.head_ref }} --depth 1 \${WORK_DIR}/tmp/repo
+      #    
+      #    EOF
+      #    } &&
+      #    chmod +x pi-gen-sunscan/01-prepare-repo/00-run.sh
+        
       - name: Set up environment
         run: |
           sudo apt-get update
@@ -51,13 +111,26 @@ jobs:
             BOARD=rockpi-4bplus \
             BRANCH=current kernel\
             RELEASE=buster \
-            BUILD_MINIMAL=yes
-            KERNEL_CONFIGURE=no
-
+            BUILD_MINIMAL=yes \
+            KERNEL_CONFIGURE=no \
+            COMPRESS_OUTPUTIMAGE=7z \
+            COMPRESS_LEVEL=6 \
+            ENABLE_SSH=yes \
+            HOSTNAME=sunscan_test \
+            IMAGE_NAME=${{ env.IMGFILENAME }}
+            KEYBOARD_KEYMAP=${{ env.KEYBOARD_KEYMAP }} \
+            KEYBOARD_LAYOUT=${{ env.KEYBOARD_LAYOUT }} \
+            LOCALE=${{ env.LOCALE }} \
+            ROOTPWD=${{ env.ROOTPWD }} \
+            FIRST_USER_NAME=${{ env.FIRST_USER_NAME }} \
+            FIRST_USER_PASS=${{ env.FIRST_USER_PASS }} \
+            TZ=${{ env.TZ }} \
+            STAGE_LIST=${{ env.STAGE_LIST }}
 
       - name: Upload Armbian image
         uses: actions/upload-artifact@v3
         with:
           name: armbian-image
           path: |
-            ./build/output/images/*.img
+            ./build/output/images/${{ env.IMAGE_NAME }}*.img
+          #  ./build/output/images/*.img
