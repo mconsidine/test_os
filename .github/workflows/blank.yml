@@ -43,10 +43,10 @@ jobs:
       - name: Clone Armbian build repository
         run: |
           git clone --depth 1 https://github.com/armbian/build.git
-          cd build
 
       - name: Configure build
         run: |
+          cd build
           ./compile.sh EXPERT=yes \
             BOARD=rockpi-4bplus \
             BRANCH=current \
