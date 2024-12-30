@@ -1,26 +1,39 @@
-name: Build Armbian
-on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+name: Build Minimal Armbian
 
-  # Allows you to run this workflow manually from the Actions tab
+on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
-#name: Build Armbian Image
-#on: [push]
-#  workflow_dispatch:
 jobs:
-  build:
+  build-armbian:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
-    - uses: armbian/build@main
-      with:
-        armbian_target: "build"  # Set to "build" for building an image [1, 5, 6]
-        armbian_board: "rockpi-4bplus"  # Specify your target board [1, 6]
-        armbian_release: "jammy"  # Specify the Armbian release version [1, 6]
-        armbian_kernel_branch: "current"
-        armbian_ui: "minimal"
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git curl build-essential gcc bc bison flex python3 python3-pip
+
+      - name: Start Armbian Build
+        run: |
+          git clone --depth 1 https://github.com/armbian/build.git armbian-build
+          cd armbian-build
+          ./compile.sh \
+            BOARD=rockpi-4bplus \
+            BRANCH=current \
+            RELEASE=bullseye \
+            BUILD_MINIMAL=yes \
+            BUILD_DESKTOP=no \
+            KERNEL_ONLY=no \
+            KERNEL_CONFIGURE=no
+
+      - name: Upload Output as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: armbian-output
+          path: armbian-build/output/
