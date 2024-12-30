@@ -51,9 +51,8 @@ jobs:
             BOARD=rockpi-4bplus \
             BRANCH=current kernel\
             RELEASE=buster \
-            BUILD_MINIMAL=yes #\
-            #KERNEL_ONLY=no \
-            #KERNEL_CONFIGURE=no
+            BUILD_MINIMAL=yes
+            KERNEL_CONFIGURE=no
 
 
       - name: Upload Armbian image
