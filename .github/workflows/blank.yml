@@ -1,86 +1,63 @@
-name: Build Minimal Armbian
+name: Build Armbian for RockPi-4B+
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-    inputs:
-
-      armbian_target:
-        type: choice
-        description: 'Build'
-        required: false
-        options:
-        - kernel
-        - build
-        default: build
-
-      armbian_kernel_branch:
-        type: choice
-        description: 'Kernel branch'
-        options:
-        - legacy
-        - current
-        - edge
-        default: 'current'
-
-      armbian_release:
-        type: choice
-        description: 'Userspace'
-        options:
-        - jammy
-        - mantic
-        - bookworm
-        - trixie
-        - sid
-        default: 'jammy'
-
-      armbian_ui:
-        type: choice
-        description: 'User interface (not all works)'
-        options:
-        - minimal
-        - server
-        - xfce
-        - gnome
-        - cinnamon
-        - i3-wm
-        - kde-plasma
-        default: 'minimal'
-
-      armbian_version:
-        description: 'Version'
-        required: false
-        default: ''
-
-      armbian_board:
-        type: choice
-        description: 'Board'
-        options:
-        - rockpi-4bplus
-        default: 'rockpi-4bplus'
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
-  build:
-    name: "Build Armbian"
+  build-armbian:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: armbian/build@v24.8.1
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git \
+            curl \
+            unzip \
+            wget \
+            xz-utils
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y \
+            gcc \
+            g++ \
+            make \
+            bc \
+            bison \
+            flex \
+            libssl-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            qemu-user-static \
+            debootstrap \
+            binfmt-support \
+            build-essential \
+            u-boot-tools \
+            device-tree-compiler
+
+      - name: Clone Armbian build repository
+        run: |
+          git clone --depth 1 https://github.com/armbian/build.git
+          cd build
+
+      - name: Configure build
+        run: |
+          ./compile.sh EXPERT=yes \
+            BOARD=rockpi-4bplus \
+            BRANCH=current \
+            RELEASE=buster \
+            BUILD_MINIMAL=yes \
+            KERNEL_ONLY=no \
+            KERNEL_CONFIGURE=no
+
+      - name: Upload Armbian image
+        uses: actions/upload-artifact@v3
         with:
-          armbian_token:              "${{secrets.GITHUB_TOKEN}}"
-          armbian_target:             "${{inputs.armbian_target}}"
-          armbian_release:            "${{inputs.armbian_release}}"
-          armbian_kernel_branch:      "${{inputs.armbian_kernel_branch}}"
-          armbian_ui:                 "${{inputs.armbian_ui}}"
-          armbian_board:              "${{inputs.armbian_board}}"
-          armbian_release_tittle:     "Armbian SDK"
-          armbian_release_body:       "Virtual images for x86 and arm64"
-          armbian_pgp_key:            "${{secrets.GPG_KEY1}}"
-          armbian_pgp_password:       "${{secrets.GPG_PASSPHRASE1}}"
-          
-#      - name: Upload Output as Artifact
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: armbian-output
-#          path: armbian-build/output/          
+          name: armbian-image
+          path: |
+            ./build/output/images/*.img
