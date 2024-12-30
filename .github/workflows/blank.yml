@@ -1,0 +1,20 @@
+name: "Build Armbian"
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  #push:
+  #  branches: [ "main" ]
+  #pull_request:
+  #  branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  build-armbian:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: armbian/build@main
+        with:
+          #armbian_token:     "${{ secrets.GITHUB_TOKEN }}"  # GitHub token
+          armbian_release:   "jammy"                        # userspace
+          armbian_target:    "build"                        # build=image, kernel=kernel
+          armbian_board:     "bananapim5"                   # build target
