@@ -5,35 +5,82 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+
+      armbian_target:
+        type: choice
+        description: 'Build'
+        required: false
+        options:
+        - kernel
+        - build
+        default: build
+
+      armbian_kernel_branch:
+        type: choice
+        description: 'Kernel branch'
+        options:
+        - legacy
+        - current
+        - edge
+        default: 'current'
+
+      armbian_release:
+        type: choice
+        description: 'Userspace'
+        options:
+        - jammy
+        - mantic
+        - bookworm
+        - trixie
+        - sid
+        default: 'jammy'
+
+      armbian_ui:
+        type: choice
+        description: 'User interface (not all works)'
+        options:
+        - minimal
+        - server
+        - xfce
+        - gnome
+        - cinnamon
+        - i3-wm
+        - kde-plasma
+        default: 'minimal'
+
+      armbian_version:
+        description: 'Version'
+        required: false
+        default: ''
+
+      armbian_board:
+        type: choice
+        description: 'Board'
+        options:
+        - rockpi-4bplus
+        default: 'rockpi-4bplus'
 
 jobs:
-  build-armbian:
+  build:
+    name: "Build Armbian"
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y git curl build-essential gcc bc bison flex python3 python3-pip
-
-      - name: Start Armbian Build
-        run: |
-          git clone --depth 1 https://github.com/armbian/build.git armbian-build
-          cd armbian-build
-          ./compile.sh \
-            BOARD=rockpi-4bplus \
-            BRANCH=current \
-            RELEASE=bullseye \
-            BUILD_MINIMAL=yes \
-            BUILD_DESKTOP=no \
-            KERNEL_ONLY=no \
-            KERNEL_CONFIGURE=no
-
-      - name: Upload Output as Artifact
-        uses: actions/upload-artifact@v3
+      - uses: armbian/build@v24.8.1
         with:
-          name: armbian-output
-          path: armbian-build/output/
+          armbian_token:              "${{secrets.GITHUB_TOKEN}}"
+          armbian_target:             "${{inputs.armbian_target}}"
+          armbian_release:            "${{inputs.armbian_release}}"
+          armbian_kernel_branch:      "${{inputs.armbian_kernel_branch}}"
+          armbian_ui:                 "${{inputs.armbian_ui}}"
+          armbian_board:              "${{inputs.armbian_board}}"
+          armbian_release_tittle:     "Armbian SDK"
+          armbian_release_body:       "Virtual images for x86 and arm64"
+          armbian_pgp_key:            "${{secrets.GPG_KEY1}}"
+          armbian_pgp_password:       "${{secrets.GPG_PASSPHRASE1}}"
+          
+#      - name: Upload Output as Artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: armbian-output
+#          path: armbian-build/output/          
