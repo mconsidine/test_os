@@ -41,7 +41,7 @@ jobs:
             COMMIT=$(git rev-parse --short HEAD)
             echo "APP_VERSION=${BRANCH}_${COMMIT}" >> $GITHUB_ENV
             echo "IMGFILENAME=sunscan_os_${BRANCH}_${COMMIT}" >> $GITHUB_ENV
-
+          fi
       - name: Set up environment
         run: |
           sudo apt-get update
