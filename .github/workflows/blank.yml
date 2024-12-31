@@ -8,10 +8,10 @@ on:
   #  branches:
   #    - main  
   workflow_dispatch: # Allows manual triggering of the workflow
-    #tags:
-    #  - '*.*.*'
-    #branches:
-    # - main
+    tags:
+      - '*.*.*'
+    branches:
+     - main
 
 jobs:
   build-armbian:
