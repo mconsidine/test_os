@@ -42,6 +42,7 @@ jobs:
             echo "APP_VERSION=${BRANCH}_${COMMIT}" >> $GITHUB_ENV
             echo "IMGFILENAME=sunscan_os_${BRANCH}_${COMMIT}" >> $GITHUB_ENV
           fi
+      
       - name: Set up environment
         run: |
           sudo apt-get update
@@ -97,6 +98,9 @@ jobs:
             #FIRST_USER_PASS=${{ env.FIRST_USER_PASS }} \
             #TZ=${{ env.TZ }} #\
             #STAGE_LIST=${{ env.STAGE_LIST }}
+
+      - name: Check file structure
+        run: |
           #cd ..
           #ls -lha
           #cd build
@@ -104,12 +108,14 @@ jobs:
           #cd output
           #ls -lha ./output
           #cd images
+          echo "listing of ./output/images"
           ls -lha ./output/images
+          ls -lha ./output/images/*.xz
           
       - name: Upload Armbian image
         uses: actions/upload-artifact@v4
         with:
           name: armbian-image
-          path: ./output/images/
+          path: ./output/images/*.xz
           #path: |
           #  ./output/images/${{ env.IMGFILENAME }}*
