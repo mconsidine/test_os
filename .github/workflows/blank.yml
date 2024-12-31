@@ -124,8 +124,8 @@ jobs:
             ROOTPWD=${{ env.ROOTPWD }} \
             FIRST_USER_NAME=${{ env.FIRST_USER_NAME }} \
             FIRST_USER_PASS=${{ env.FIRST_USER_PASS }} \
-            TZ=${{ env.TZ }} \
-            STAGE_LIST=${{ env.STAGE_LIST }}
+            TZ=${{ env.TZ }} #\
+            #STAGE_LIST=${{ env.STAGE_LIST }}
 
       - name: Upload Armbian image
         uses: actions/upload-artifact@v3
