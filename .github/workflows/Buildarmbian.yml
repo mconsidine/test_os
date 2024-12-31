@@ -84,8 +84,8 @@ jobs:
             RELEASE=bookworm \
             BUILD_MINIMAL=yes \
             KERNEL_CONFIGURE=no \
-            #COMPRESS_OUTPUTIMAGE=xz \
-            #COMPRESS_LEVEL=6 \
+            COMPRESS_OUTPUTIMAGE=xz \
+            IMAGE_XZ_COMPRESSION_RATIO=6
             #ENABLE_SSH=yes \
             #HOSTNAME=sunscan_test \
             #IMAGE_NAME=${{ env.IMGFILENAME }} \
