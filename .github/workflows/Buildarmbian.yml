@@ -110,6 +110,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: armbian-image
-          path: ./output/images
+          path: ./output/images/Ar*.*
           #path: |
           #  ./output/images/${{ env.IMGFILENAME }}*
