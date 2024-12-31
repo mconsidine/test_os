@@ -1,0 +1,106 @@
+name: Build Armbian for RockPi-4B+
+
+on:
+  #pull_request:
+  #push:
+  #  tags:
+  #    - '*.*.*'
+  #  branches:
+  #    - main  
+  workflow_dispatch: # Allows manual triggering of the workflow
+    tags:
+      - '*.*.*'
+    branches:
+     - main
+
+jobs:
+  build-armbian:
+    runs-on: ubuntu-latest
+
+    env:
+      KEYBOARD_LAYOUT: us
+      LOCALE: en_US.UTF-8
+      ROOTPWD: rockpi
+      FIRST_USER_NAME: admin
+      FIRST_USER_PASS: sunscan
+      TZ: America/New_York
+      STAGE_LIST: stage0 stage1 stage2 ./custom-gen-sunscan
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set version and image filename
+        run: |
+          TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
+          if [ -n "$TAG" ]; then
+            echo "APP_VERSION=$TAG" >> $GITHUB_ENV
+            echo "IMGFILENAME=sunscan_os_$TAG" >> $GITHUB_ENV
+          else
+            BRANCH=$(git rev-parse --abbrev-ref HEAD)
+            COMMIT=$(git rev-parse --short HEAD)
+            echo "APP_VERSION=${BRANCH}_${COMMIT}" >> $GITHUB_ENV
+            echo "IMGFILENAME=sunscan_os_${BRANCH}_${COMMIT}" >> $GITHUB_ENV
+
+      - name: Set up environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git \
+            curl \
+            unzip \
+            wget \
+            xz-utils
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y \
+            gcc \
+            g++ \
+            make \
+            bc \
+            bison \
+            flex \
+            libssl-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            qemu-user-static \
+            debootstrap \
+            binfmt-support \
+            build-essential \
+            u-boot-tools \
+            device-tree-compiler
+
+      - name: Clone Armbian build repository
+        run: |
+          git clone --depth 1 https://github.com/armbian/build.git
+
+      - name: Configure build
+        run: |
+          cd build
+          ./compile.sh EXPERT=yes \
+            BOARD=rockpi-4bplus \
+            BRANCH=current kernel\
+            RELEASE=buster \
+            BUILD_MINIMAL=yes \
+            KERNEL_CONFIGURE=no \
+            COMPRESS_OUTPUTIMAGE=7z \
+            COMPRESS_LEVEL=6 \
+            ENABLE_SSH=yes \
+            HOSTNAME=sunscan_test \
+            IMAGE_NAME=${{ env.IMGFILENAME }} \
+            KEYBOARD_KEYMAP=${{ env.KEYBOARD_KEYMAP }} \
+            KEYBOARD_LAYOUT=${{ env.KEYBOARD_LAYOUT }} \
+            LOCALE=${{ env.LOCALE }} \
+            ROOTPWD=${{ env.ROOTPWD }} \
+            FIRST_USER_NAME=${{ env.FIRST_USER_NAME }} \
+            FIRST_USER_PASS=${{ env.FIRST_USER_PASS }} \
+            TZ=${{ env.TZ }} #\
+            #STAGE_LIST=${{ env.STAGE_LIST }}
+
+      - name: Upload Armbian image
+        uses: actions/upload-artifact@v3
+        with:
+          name: armbian-image
+          path: |
+            ./output/images/${{ env.IMAGE_NAME }}*.img
