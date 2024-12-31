@@ -98,11 +98,17 @@ jobs:
             TZ=${{ env.TZ }} #\
             #STAGE_LIST=${{ env.STAGE_LIST }}
           cd ..
-          find . | grep sun
+          ls -lha
+          cd build
+          ls -lha
+          cd output
+          ls -lha
+          cd images
+          ls -lha
           
       - name: Upload Armbian image
         uses: actions/upload-artifact@v3
         with:
           name: armbian-image
           path: |
-            ./output/images/${{ env.IMGFILENAME }}
+            ./${{ env.IMGFILENAME }}
