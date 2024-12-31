@@ -31,7 +31,7 @@ jobs:
         echo "IMGFILENAME=sunscan_os_${BRANCH}_${COMMIT}" >> $GITHUB_ENV
       fi
 
-      KEYBOARD_KEYMAP: us
+      #KEYBOARD_KEYMAP: us
       KEYBOARD_LAYOUT: us
       LOCALE: en_US.UTF-8
       ROOTPWD: rockpi
