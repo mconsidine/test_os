@@ -103,4 +103,4 @@ jobs:
         with:
           name: armbian-image
           path: |
-            ./output/images/${{ env.IMAGE_NAME }}*.img
+            ./output/images/${{ env.IMGFILENAME }}*
