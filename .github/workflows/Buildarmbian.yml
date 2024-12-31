@@ -1,4 +1,4 @@
-name: Build Armbian for RockPi-4B+
+6name: Build Armbian for RockPi-4B+
 
 on:
   #pull_request:
@@ -111,4 +111,4 @@ jobs:
         with:
           name: armbian-image
           path: |
-            ./output/logs
+            ./output/logs/*.*.*
