@@ -1,4 +1,4 @@
-6name: Build Armbian for RockPi-4B+
+name: Build Armbian for RockPi-4B+
 
 on:
   #pull_request:
