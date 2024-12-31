@@ -8,10 +8,10 @@ on:
   #  branches:
   #    - main  
   workflow_dispatch: # Allows manual triggering of the workflow
-    tags:
-      - '*.*.*'
-    branches:
-     - main
+  #  tags:
+  #    - '*.*.*'
+  #  branches:
+  #   - main
 
 jobs:
   build-armbian:
@@ -97,8 +97,8 @@ jobs:
             FIRST_USER_PASS=${{ env.FIRST_USER_PASS }} \
             TZ=${{ env.TZ }} #\
             #STAGE_LIST=${{ env.STAGE_LIST }}
-          ls -lha ./output
-          ls -lha ./output/images
+          cd ..
+          find . | grep sun
           
       - name: Upload Armbian image
         uses: actions/upload-artifact@v3
