@@ -8,10 +8,10 @@ on:
   #  branches:
   #    - main  
   workflow_dispatch: # Allows manual triggering of the workflow
-  #  tags:
-  #    - '*.*.*'
-  #  branches:
-  #   - main
+    tags:
+      - '*.*.*'
+    branches:
+     - main
 
 jobs:
   build-armbian:
@@ -81,7 +81,7 @@ jobs:
           ./compile.sh EXPERT=yes \
             BOARD=rockpi-4bplus \
             BRANCH=current \
-            RELEASE=buster \
+            RELEASE=bookworm \
             BUILD_MINIMAL=yes \
             KERNEL_CONFIGURE=no \
             COMPRESS_OUTPUTIMAGE=xz \
@@ -89,7 +89,7 @@ jobs:
             ENABLE_SSH=yes \
             HOSTNAME=sunscan_test \
             IMAGE_NAME=${{ env.IMGFILENAME }} \
-            KEYBOARD_KEYMAP=${{ env.KEYBOARD_KEYMAP }} \
+            #KEYBOARD_KEYMAP=${{ env.KEYBOARD_KEYMAP }} \
             KEYBOARD_LAYOUT=${{ env.KEYBOARD_LAYOUT }} \
             LOCALE=${{ env.LOCALE }} \
             ROOTPWD=${{ env.ROOTPWD }} \
