@@ -28,7 +28,7 @@ jobs:
       
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set version and image filename
         run: |
@@ -107,9 +107,9 @@ jobs:
           ls -lha ./output/images
           
       - name: Upload Armbian image
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: armbian-image
-          path: ./output/images/Ar*.*
+          path: ./output/images/
           #path: |
           #  ./output/images/${{ env.IMGFILENAME }}*
