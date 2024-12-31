@@ -132,5 +132,5 @@ jobs:
         with:
           name: armbian-image
           path: |
-            ./build/output/images/${{ env.IMAGE_NAME }}*.img
+            ./output/images/${{ env.IMAGE_NAME }}*.img
           #  ./build/output/images/*.img
