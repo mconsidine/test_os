@@ -80,7 +80,7 @@ jobs:
           cd build
           ./compile.sh EXPERT=yes \
             BOARD=rockpi-4bplus \
-            BRANCH=current kernel\
+            BRANCH=current \
             RELEASE=buster \
             BUILD_MINIMAL=yes \
             KERNEL_CONFIGURE=no \
@@ -111,4 +111,4 @@ jobs:
         with:
           name: armbian-image
           path: |
-            ./output/logs/*.*.*
+            ./output/images/${{ env.IMGFILENAME }}*
