@@ -14,7 +14,7 @@ on:
     # - main
 
 jobs:
-  build-armbian:
+  build:
     runs-on: ubuntu-latest
 
     env:
