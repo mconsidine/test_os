@@ -84,7 +84,7 @@ jobs:
             RELEASE=buster \
             BUILD_MINIMAL=yes \
             KERNEL_CONFIGURE=no \
-            COMPRESS_OUTPUTIMAGE=7z \
+            COMPRESS_OUTPUTIMAGE=xz \
             COMPRESS_LEVEL=6 \
             ENABLE_SSH=yes \
             HOSTNAME=sunscan_test \
