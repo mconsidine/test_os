@@ -17,14 +17,14 @@ jobs:
   build-armbian:
     runs-on: ubuntu-latest
 
-    env:
-      KEYBOARD_LAYOUT: us
-      LOCALE: en_US.UTF-8
-      ROOTPWD: rockpi
-      FIRST_USER_NAME: admin
-      FIRST_USER_PASS: sunscan
-      TZ: America/New_York
-      STAGE_LIST: stage0 stage1 stage2 ./custom-gen-sunscan
+    #env:
+    #  KEYBOARD_LAYOUT: us
+    #  LOCALE: en_US.UTF-8
+    #  ROOTPWD: rockpi
+    #  FIRST_USER_NAME: admin
+    #  FIRST_USER_PASS: sunscan
+    #  TZ: America/New_York
+    #  STAGE_LIST: stage0 stage1 stage2 ./custom-gen-sunscan
       
     steps:
       - name: Checkout repository
@@ -84,25 +84,25 @@ jobs:
             RELEASE=bookworm \
             BUILD_MINIMAL=yes \
             KERNEL_CONFIGURE=no \
-            COMPRESS_OUTPUTIMAGE=xz \
-            COMPRESS_LEVEL=6 \
-            ENABLE_SSH=yes \
-            HOSTNAME=sunscan_test \
-            IMAGE_NAME=${{ env.IMGFILENAME }} \
+            #COMPRESS_OUTPUTIMAGE=xz \
+            #COMPRESS_LEVEL=6 \
+            #ENABLE_SSH=yes \
+            #HOSTNAME=sunscan_test \
+            #IMAGE_NAME=${{ env.IMGFILENAME }} \
             #KEYBOARD_KEYMAP=${{ env.KEYBOARD_KEYMAP }} \
-            KEYBOARD_LAYOUT=${{ env.KEYBOARD_LAYOUT }} \
-            LOCALE=${{ env.LOCALE }} \
-            ROOTPWD=${{ env.ROOTPWD }} \
-            FIRST_USER_NAME=${{ env.FIRST_USER_NAME }} \
-            FIRST_USER_PASS=${{ env.FIRST_USER_PASS }} \
-            TZ=${{ env.TZ }} #\
+            #KEYBOARD_LAYOUT=${{ env.KEYBOARD_LAYOUT }} \
+            #LOCALE=${{ env.LOCALE }} \
+            #ROOTPWD=${{ env.ROOTPWD }} \
+            #FIRST_USER_NAME=${{ env.FIRST_USER_NAME }} \
+            #FIRST_USER_PASS=${{ env.FIRST_USER_PASS }} \
+            #TZ=${{ env.TZ }} #\
             #STAGE_LIST=${{ env.STAGE_LIST }}
           #cd ..
-          ls -lha
+          #ls -lha
           #cd build
           #ls -lha
           #cd output
-          ls -lha ./output
+          #ls -lha ./output
           #cd images
           ls -lha ./output/images
           
