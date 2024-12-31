@@ -97,11 +97,12 @@ jobs:
             FIRST_USER_PASS=${{ env.FIRST_USER_PASS }} \
             TZ=${{ env.TZ }} #\
             #STAGE_LIST=${{ env.STAGE_LIST }}
-          ls -lha
+          ls -lha ./output
+          ls -lha ./output/images
           
       - name: Upload Armbian image
         uses: actions/upload-artifact@v3
         with:
           name: armbian-image
           path: |
-            ./build/output/images/${{ env.IMGFILENAME }}
+            ./output/images/${{ env.IMGFILENAME }}
