@@ -8,13 +8,13 @@ on:
   #  branches:
   #    - main  
   workflow_dispatch: # Allows manual triggering of the workflow
-    tags:
-      - '*.*.*'
+    #tags:
+    #  - '*.*.*'
     #branches:
     # - main
 
 jobs:
-  build:
+  build-armbian:
     runs-on: ubuntu-latest
 
     env:
