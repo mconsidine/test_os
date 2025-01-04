@@ -13,11 +13,38 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Add a script tot he custom files (this is for specific installs)
+        run: |
+          cat << 'EOF' > ./custom-pkg-list/00-install/00-run.sh
+          #!/bin/bash
+
+          # where is this being run from?
+          echo "IN 00-install/00-run.sh"
+          pwd
+          ls -als
+          
+          # Path to the 00-packages file
+          PACKAGES_FILE="00-packages"
+          # Check if the packages file exists
+          if [ ! -f "$PACKAGES_FILE" ]; then
+            echo "Packages file not found: $PACKAGES_FILE"
+            exit 1
+          fi
+
+          # Read the packages file and install each package
+          while IFS= read -r package; do
+            if [ -n "$package" ]; then
+              echo "Installing package: $package"
+              sudo apt-get install -y "$package"
+            fi
+          done < "$PACKAGES_FILE"
+          EOF
+
       - name: Clone Armbian build repository
         run: |
           git clone --depth 1 https://github.com/armbian/build.git
 
-      - name: Source level with build folder from armbian
+      - name: CHECK Source level with build folder from armbian
         run : |
           ls -lha
 
@@ -33,19 +60,22 @@ jobs:
           # make folder tree. this will be visible in final image at tmp/overlay
           mkdir -p build/userpatches/overlay
 
-          # copy a script to be run (this is for specific installs)
-          cp -a custom-pkg-list build/userpatches/overlay
+      - name : Copy files to what will be tmp/overlay and create customize-image.sh
+        run: |
+          rsync -av custom-pkg-list build/userpatches/overlay
 
           # create customize-image.sh 'in line' and put in userpatches for build execution
           cat > build/userpatches/customize-image.sh <<-EOF
           #!bin/bash
           # anything done in here is in to-be-finalized image, starting at root (ie \)
-
+          
+          # do we need to do apt-get update and/or install git, gcc, etc???
+          
           # fwiw, this is running as chroot, so dont need sudo
           apt list | grep git
 
-          chmod +x tmp/overlay/00-install/00-install.sh
-          ./tmp/overlay/00-install/00-install.sh
+          chmod +x tmp/overlay/00-install/00-run.sh
+          ./tmp/overlay/00-install/00-run.sh
           EOF
           
       - name: Configure build
@@ -60,11 +90,12 @@ jobs:
             COMPRESS_OUTPUTIMAGE=xz \
             IMAGE_XZ_COMPRESSION_RATIO=6
             #ENABLE_SSH=yes \
-            #HOSTNAME=sunscan_test \
+            #HOSTNAME=test_os \
 
       - name: Upload Armbian image
         uses: actions/upload-artifact@v4
         with:
           name: armbian-image
+          # we cd'd into build just above, this is run from that folder
           path: ./output/images/*.xz
 
