@@ -78,6 +78,7 @@ jobs:
           echo "HERE WE ARE"
           pwd
           ls -als
+          ls -alsr tmp
           chmod +x tmp/overlay/00-install/00-run.sh
           ./tmp/overlay/00-install/00-run.sh
           EOF
