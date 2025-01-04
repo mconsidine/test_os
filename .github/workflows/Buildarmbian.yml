@@ -54,6 +54,7 @@ jobs:
           # want to make customize-image.sh, which will get run shortly before img is finalized
           # customize-image.sh is run from the root of the to-be-finalized image
           # at this point though we are still at the source level ...
+          echo "WE ARE NOW HERE..."
           pwd
           ls -als
 
@@ -66,7 +67,7 @@ jobs:
 
           # create customize-image.sh 'in line' and put in userpatches for build execution
           cat > build/userpatches/customize-image.sh <<-EOF
-          #!bin/bash
+          #!/bin/bash          
           # anything done in here is in to-be-finalized image, starting at root (ie \)
           
           # do we need to do apt-get update and/or install git, gcc, etc???
@@ -74,6 +75,9 @@ jobs:
           # fwiw, this is running as chroot, so dont need sudo
           apt list | grep git
 
+          echo "HERE WE ARE"
+          pwd
+          ls -als
           chmod +x tmp/overlay/00-install/00-run.sh
           ./tmp/overlay/00-install/00-run.sh
           EOF
