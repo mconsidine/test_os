@@ -1,81 +1,53 @@
 name: Build Armbian for RockPi-4B+
 
 on:
-  #pull_request:
-  #push:
-  #  tags:
-  #    - '*.*.*'
-  #  branches:
-  #    - main  
+
   workflow_dispatch: # Allows manual triggering of the workflow
-    tags:
-      - '*.*.*'
-    branches:
-     - main
+
 
 jobs:
   build-armbian:
     runs-on: ubuntu-latest
 
-    #env:
-    #  KEYBOARD_LAYOUT: us
-    #  LOCALE: en_US.UTF-8
-    #  ROOTPWD: rockpi
-    #  FIRST_USER_NAME: admin
-    #  FIRST_USER_PASS: sunscan
-    #  TZ: America/New_York
-    #  STAGE_LIST: stage0 stage1 stage2 ./custom-gen-sunscan
-      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set version and image filename
-        run: |
-          TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
-          if [ -n "$TAG" ]; then
-            echo "APP_VERSION=$TAG" >> $GITHUB_ENV
-            echo "IMGFILENAME=sunscan_os_$TAG" >> $GITHUB_ENV
-          else
-            BRANCH=$(git rev-parse --abbrev-ref HEAD)
-            COMMIT=$(git rev-parse --short HEAD)
-            echo "APP_VERSION=${BRANCH}_${COMMIT}" >> $GITHUB_ENV
-            echo "IMGFILENAME=sunscan_os_${BRANCH}_${COMMIT}" >> $GITHUB_ENV
-          fi
-      
-      #- name: Set up environment
-      #  run: |
-      #    sudo apt-get update
-      #    sudo apt-get install -y \
-      #      git \
-      #      curl \
-      #      unzip \
-      #      wget \
-      #      xz-utils
-
-      #- name: Install dependencies
-      #  run: |
-      #    sudo apt-get install -y \
-      #      gcc \
-      #      g++ \
-      #      make \
-      #      bc \
-      #      bison \
-      #      flex \
-      #      libssl-dev \
-      #      libncurses5-dev \
-      #      libncursesw5-dev \
-      #      qemu-user-static \
-      #      debootstrap \
-      #      binfmt-support \
-      #      build-essential \
-      #      u-boot-tools \
-      #      device-tree-compiler
 
       - name: Clone Armbian build repository
         run: |
           git clone --depth 1 https://github.com/armbian/build.git
 
+      - name: Source level with build folder from armbian
+        run : |
+          ls -lha
+
+      - name: Create userpatches and userpatches/overlay
+        run : |
+          # userpatches/overlay gets copied to tmp/overlay (under build)
+          # want to make customize-image.sh, which will get run shortly before img is finalized
+          # customize-image.sh is run from the root of the to-be-finalized image
+          # at this point though we are still at the source level ...
+          pwd
+          ls -als
+
+          # make folder tree. this will be visible in final image at tmp/overlay
+          mkdir -p build/userpatches/overlay
+
+          # copy a script to be run (this is for specific installs)
+          cp -a custom-pkg-list build/userpatches/overlay
+
+          # create customize-image.sh 'in line' and put in userpatches for build execution
+          cat > build/userpatches/customize-image.sh <<-EOF
+          #!bin/bash
+          # anything done in here is in to-be-finalized image, starting at root (ie \)
+
+          # fwiw, this is running as chroot, so dont need sudo
+          apt list | grep git
+
+          chmod +x tmp/overlay/00-install/00-install.sh
+          ./tmp/overlay/00-install/00-install.sh
+          EOF
+          
       - name: Configure build
         run: |
           cd build
@@ -87,33 +59,9 @@ jobs:
             KERNEL_CONFIGURE=no \
             COMPRESS_OUTPUTIMAGE=xz \
             IMAGE_XZ_COMPRESSION_RATIO=6
-            
             #ENABLE_SSH=yes \
             #HOSTNAME=sunscan_test \
-            #IMAGE_NAME=${{ env.IMGFILENAME }} \
-            #KEYBOARD_KEYMAP=${{ env.KEYBOARD_KEYMAP }} \
-            #KEYBOARD_LAYOUT=${{ env.KEYBOARD_LAYOUT }} \
-            #LOCALE=${{ env.LOCALE }} \
-            #ROOTPWD=${{ env.ROOTPWD }} \
-            #FIRST_USER_NAME=${{ env.FIRST_USER_NAME }} \
-            #FIRST_USER_PASS=${{ env.FIRST_USER_PASS }} \
-            #TZ=${{ env.TZ }} #\
-            #STAGE_LIST=${{ env.STAGE_LIST }}
 
-      - name: Check file structure
-        run: |
-          #cd ..
-          #ls -lha
-          #cd build
-          #ls -lha
-          #cd output
-          #ls -lha ./output
-          #cd images
-          echo "listing of ./output/images"
-          ls -lha ./output/images
-          echo "listing of ./output/images/*.xz"
-          ls -lha ./output/images/*.xz
-          
       - name: Upload Armbian image
         uses: actions/upload-artifact@v4
         with:
