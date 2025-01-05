@@ -100,10 +100,9 @@ jobs:
             #ENABLE_SSH=yes \
             #HOSTNAME=test_os \
 
-      #- name: Upload Armbian image
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: armbian-image
-      #    # we cd'd into build just above, this is run from that folder
-      #    path: ./output/images/*.xz
-
+      - name: Upload Armbian image
+        uses: actions/upload-artifact@v4
+        with:
+          name: armbian-image
+          # we cd'd into build just above, this is run from that folder
+          path: ./output/images/*.xz
