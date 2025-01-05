@@ -51,7 +51,6 @@ jobs:
           ls -lha
           echo "Should be build folder"
           ls -lha build
-          ls -lha build/tmp
 
       - name: Create userpatches and userpatches/overlay
         run : |
