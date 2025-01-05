@@ -86,6 +86,8 @@ jobs:
           ls -alsr tmp/overlay/custom-pkg-list
           cp -a tmp/overlay/custom-pkg-list home
           chmod +x home/custom-pkg-list/00-install/00-run.sh
+          apt-get update
+          apt-get install git -y
           home/custom-pkg-list/00-install/00-run.sh
           EOF
           
