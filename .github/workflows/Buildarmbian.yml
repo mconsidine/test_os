@@ -105,6 +105,12 @@ jobs:
             #ENABLE_SSH=yes \
             #HOSTNAME=test_os \
 
+      - name: Configure build
+        run: |
+          ls -lha
+          ls -lha build
+          ls -alsr 
+          
       - name: Upload Armbian image
         uses: actions/upload-artifact@v4
         with:
