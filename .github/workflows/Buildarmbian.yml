@@ -141,9 +141,9 @@ jobs:
         run: |
           cd build
           ./compile.sh EXPERT=yes \
-            BOARD=rockpi-4bplus \
+            BOARD=rockpi-4b \
             BRANCH=current \
-            RELEASE=bullseye \
+            RELEASE=bookworm \
             BUILD_MINIMAL=yes \
             BUILD_DESKTOP=no \
             KERNEL_CONFIGURE=no \
