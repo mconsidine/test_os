@@ -81,29 +81,29 @@ jobs:
           echo "HERE WE ARE"
           pwd
           ls -als
-          ls -alsr tmp
+          ls -alsr tmp/overlay
           chmod +x tmp/overlay/00-install/00-run.sh
           ./tmp/overlay/00-install/00-run.sh
           EOF
           
-      - name: Configure build
-        run: |
-          cd build
-          ./compile.sh EXPERT=yes \
-            BOARD=rockpi-4bplus \
-            BRANCH=current \
-            RELEASE=bookworm \
-            BUILD_MINIMAL=yes \
-            KERNEL_CONFIGURE=no \
-            COMPRESS_OUTPUTIMAGE=xz \
-            IMAGE_XZ_COMPRESSION_RATIO=6
-            #ENABLE_SSH=yes \
-            #HOSTNAME=test_os \
+      #- name: Configure build
+      #  run: |
+       #   cd build
+       #   ./compile.sh EXPERT=yes \
+       #     BOARD=rockpi-4bplus \
+       #     BRANCH=current \
+       #     RELEASE=bookworm \
+       #     BUILD_MINIMAL=yes \
+       #     KERNEL_CONFIGURE=no \
+       #     COMPRESS_OUTPUTIMAGE=xz \
+       #     IMAGE_XZ_COMPRESSION_RATIO=6
+       #     #ENABLE_SSH=yes \
+       #     #HOSTNAME=test_os \
 
-      - name: Upload Armbian image
-        uses: actions/upload-artifact@v4
-        with:
-          name: armbian-image
-          # we cd'd into build just above, this is run from that folder
-          path: ./output/images/*.xz
+      #- name: Upload Armbian image
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: armbian-image
+      #    # we cd'd into build just above, this is run from that folder
+      #    path: ./output/images/*.xz
 
