@@ -84,8 +84,9 @@ jobs:
           pwd
           ls -als
           ls -alsr tmp/overlay/custom-pkg-list
-          #chmod +x tmp/overlay/custom-pkg-list/00-install/00-run.sh
-          sudo ./tmp/overlay/custom-pkg-list/00-install/00-run.sh
+          cp -a tmp/overlay/custom-pkg-list home
+          chmod +x home/custom-pkg-list/00-install/00-run.sh
+          home/custom-pkg-list/00-install/00-run.sh
           EOF
           
       - name: Configure build
