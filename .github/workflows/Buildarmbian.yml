@@ -20,11 +20,12 @@ jobs:
 
           # where is this being run from?
           echo "IN 00-install/00-run.sh"
+          echo "Should be image root"
           pwd
           ls -als
           
           # Path to the 00-packages file
-          PACKAGES_FILE="00-packages"
+          PACKAGES_FILE="tmp/overlay/00-install/00-packages"
           # Check if the packages file exists
           if [ ! -f "$PACKAGES_FILE" ]; then
             echo "Packages file not found: $PACKAGES_FILE"
@@ -35,13 +36,14 @@ jobs:
           while IFS= read -r package; do
             if [ -n "$package" ]; then
               echo "Installing package: $package"
-              sudo apt-get install -y "$package"
+              apt-get install -y "$package"
             fi
           done < "$PACKAGES_FILE"
           EOF
 
       - name: Clone Armbian build repository
         run: |
+          echo "Should be source folder"
           git clone --depth 1 https://github.com/armbian/build.git
 
       - name: CHECK Source level with build folder from armbian
@@ -50,11 +52,11 @@ jobs:
 
       - name: Create userpatches and userpatches/overlay
         run : |
-          # userpatches/overlay gets copied to tmp/overlay (under build)
+          # build/userpatches/overlay gets copied to tmp/overlay
           # want to make customize-image.sh, which will get run shortly before img is finalized
           # customize-image.sh is run from the root of the to-be-finalized image
           # at this point though we are still at the source level ...
-          echo "WE ARE NOW HERE..."
+          echo "WE ARE NOW HERE at soutce folder..."
           pwd
           ls -als
 
@@ -73,6 +75,7 @@ jobs:
           # do we need to do apt-get update and/or install git, gcc, etc???
           
           # fwiw, this is running as chroot, so dont need sudo
+          echo This xhould be image root"
           apt list | grep git
 
           echo "HERE WE ARE"
