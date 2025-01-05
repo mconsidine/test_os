@@ -1,4 +1,4 @@
-name: Build Armbian for RockPi-4B+
+sname: Build Armbian for RockPi-4B+
 
 on:
 
@@ -143,8 +143,8 @@ jobs:
           ./compile.sh EXPERT=yes \
             BOARD=rockpi-4bplus \
             BRANCH=current \
-            RELEASE=bookworm \
-            BUILD_MINIMAL=no \
+            RELEASE=bullseye \
+            BUILD_MINIMAL=yes \
             BUILD_DESKTOP=no \
             KERNEL_CONFIGURE=no \
             COMPRESS_OUTPUTIMAGE=xz \
