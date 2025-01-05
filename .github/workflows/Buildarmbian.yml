@@ -75,50 +75,50 @@ jobs:
           # anything done in here is in to-be-finalized image, starting at root (ie \)
           
           # do we need to do apt-get update and/or install git, gcc, etc???
-          # START OF WIFI CONFIG
-          # Enable hostapd and configure DHCP server for access point
-          apt update
-          apt install -y hostapd dnsmasq
-          systemctl stop hostapd dnsmasq
+          ## START OF WIFI CONFIG
+          ## Enable hostapd and configure DHCP server for access point
+          #apt update
+          #apt install -y hostapd dnsmasq
+          #systemctl stop hostapd dnsmasq
 
-          # Configure hostapd
-          cat <<EOF > /etc/hostapd/hostapd.conf
-          interface=wlan0
-          driver=nl80211
-          ssid=RockPi-AccessPoint
-          hw_mode=g
-          channel=6
-          macaddr_acl=0
-          auth_algs=1
-          ignore_broadcast_ssid=0
-          wpa=2
-          wpa_passphrase=rockpi1234
-          wpa_key_mgmt=WPA-PSK
-          rsn_pairwwise=CCMP
-          EOT
+          ## Configure hostapd
+          #cat <<EOF > /etc/hostapd/hostapd.conf
+          #interface=wlan0
+          #driver=nl80211
+          #ssid=RockPi-AccessPoint
+          #hw_mode=g
+          #channel=6
+          #macaddr_acl=0
+          #auth_algs=1
+          #ignore_broadcast_ssid=0
+          #wpa=2
+          #wpa_passphrase=rockpi1234
+          #wpa_key_mgmt=WPA-PSK
+          #rsn_pairwwise=CCMP
+          #EOT
 
-          # Point hostapd to the new configuration
-          sed -i 's|#DAEMON_CONF="DAEMON_CONF="/etc/hostapd/hostapd.conf|g' /etc/default/hostapd
+          ## Point hostapd to the new configuration
+          #sed -i 's|#DAEMON_CONF="DAEMON_CONF="/etc/hostapd/hostapd.conf|g' /etc/default/hostapd
 
-          #Configure DHCP server
-          cat <<EOT > /etc/dnsmasq.conf
-          interface=wlan0
-          dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
-          EOT
+          ##Configure DHCP server
+          #cat <<EOT > /etc/dnsmasq.conf
+          #interface=wlan0
+          #dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
+          #EOT
 
-          # Configure network interfaces
-          cat <<EOT > /etc/network/interfaces.d/wlan0
-          auto wlan0
-          iface wlan0 inet static
-          address 192.168.4.1
-          netmask 255.255.255.0
-          EOT
+          ## Configure network interfaces
+          #cat <<EOT > /etc/network/interfaces.d/wlan0
+          #auto wlan0
+          #iface wlan0 inet static
+          #address 192.168.4.1
+          #netmask 255.255.255.0
+          #EOT
 
-          # Enable services at startup
-          systemctl unmask hostapd
-          systemctl enable hostapd
-          systemctl enable dsnmasq
-          # END OF WIFI CONFIG
+          ## Enable services at startup
+          #systemctl unmask hostapd
+          #systemctl enable hostapd
+          #systemctl enable dsnmasq
+          ## END OF WIFI CONFIG
           
           # fwiw, this is running as chroot, so dont need sudo
           echo "This should be image root"
@@ -148,9 +148,9 @@ jobs:
             BUILD_DESKTOP=no \
             KERNEL_CONFIGURE=no \
             COMPRESS_OUTPUTIMAGE=xz \
-            IMAGE_XZ_COMPRESSION_RATIO=6
-            #ENABLE_SSH=yes \
-            #HOSTNAME=test_os \
+            IMAGE_XZ_COMPRESSION_RATIO=6 \
+            ENABLE_SSH=yes \
+            HOSTNAME=test_os
 
       - name: We are at the top level
         run: |
