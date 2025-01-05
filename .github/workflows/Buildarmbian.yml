@@ -25,7 +25,7 @@ jobs:
           ls -als
           
           # Path to the 00-packages file
-          PACKAGES_FILE="tmp/overlay/00-install/00-packages"
+          PACKAGES_FILE="tmp/overlay/custom-pkg-list/00-install/00-packages"
           # Check if the packages file exists
           if [ ! -f "$PACKAGES_FILE" ]; then
             echo "Packages file not found: $PACKAGES_FILE"
@@ -81,9 +81,9 @@ jobs:
           echo "HERE WE ARE"
           pwd
           ls -als
-          ls -alsr tmp/overlay
-          chmod +x tmp/overlay/00-install/00-run.sh
-          ./tmp/overlay/00-install/00-run.sh
+          ls -alsr tmp/overlay/custom-pkg-list
+          chmod +x tmp/overlay/custom-pkg-list/00-install/00-run.sh
+          ./tmp/overlay/custom-pkg-list/00-install/00-run.sh
           EOF
           
       - name: Configure build
