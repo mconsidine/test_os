@@ -75,7 +75,7 @@ jobs:
           # do we need to do apt-get update and/or install git, gcc, etc???
           
           # fwiw, this is running as chroot, so dont need sudo
-          echo This xhould be image root"
+          echo "This should be image root"
           apt list | grep git
 
           echo "HERE WE ARE"
