@@ -105,15 +105,17 @@ jobs:
             #ENABLE_SSH=yes \
             #HOSTNAME=test_os \
 
-      - name: Configure build
+      - name: We are at the top level
         run: |
           ls -lha
           ls -lha build
-          ls -alsr 
+          ls -lha build/output
+          ls -lha build/output/images
+          ls -als build
           
       - name: Upload Armbian image
         uses: actions/upload-artifact@v4
         with:
           name: armbian-image
           # we cd'd into build just above, this is run from that folder
-          path: ./output/images/*.xz
+          path: build/output/images/*.xz
