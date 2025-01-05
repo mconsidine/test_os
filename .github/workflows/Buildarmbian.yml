@@ -49,6 +49,9 @@ jobs:
       - name: CHECK Source level with build folder from armbian
         run : |
           ls -lha
+          echo "Should be build folder"
+          ls -lha build
+          ls -lha build/tmp
 
       - name: Create userpatches and userpatches/overlay
         run : |
@@ -56,7 +59,7 @@ jobs:
           # want to make customize-image.sh, which will get run shortly before img is finalized
           # customize-image.sh is run from the root of the to-be-finalized image
           # at this point though we are still at the source level ...
-          echo "WE ARE NOW HERE at soutce folder..."
+          echo "WE ARE NOW HERE at source folder..."
           pwd
           ls -als
 
