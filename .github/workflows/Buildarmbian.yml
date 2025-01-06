@@ -141,7 +141,7 @@ jobs:
         run: |
           cd build
           ./compile.sh EXPERT=yes \
-            BOARD=rockpi-4b \
+            BOARD=rockpi-4bplus \
             BRANCH=current \
             RELEASE=bookworm \
             BUILD_MINIMAL=no \
