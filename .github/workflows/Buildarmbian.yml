@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      ##- name: Checkout repository
+      ##  uses: actions/checkout@v4
 
       - name: Add a script tot he custom files (this is for specific installs)
         run: |
@@ -52,18 +52,18 @@ jobs:
       ##    echo "Should be build folder"
       ##    ls -lha build
 
-      - name: Create userpatches and userpatches/overlay
-        run : |
-          # build/userpatches/overlay gets copied to tmp/overlay
-          # want to make customize-image.sh, which will get run shortly before img is finalized
-          # customize-image.sh is run from the root of the to-be-finalized image
-          # at this point though we are still at the source level ...
-          echo "WE ARE NOW HERE at source folder..."
-          pwd
-          ls -als
+      ##- name: Create userpatches and userpatches/overlay
+      ##  run : |
+      ##    # build/userpatches/overlay gets copied to tmp/overlay
+      ##    # want to make customize-image.sh, which will get run shortly before img is finalized
+      ##    # customize-image.sh is run from the root of the to-be-finalized image
+      ##    # at this point though we are still at the source level ...
+      ##    echo "WE ARE NOW HERE at source folder..."
+      ##    pwd
+      ##    ls -als
 
-          # make folder tree. this will be visible in final image at tmp/overlay
-          ##mkdir -p build/userpatches/overlay
+      ##    # make folder tree. this will be visible in final image at tmp/overlay
+      ##    ##mkdir -p build/userpatches/overlay
 
       - name : Copy files to what will be tmp/overlay and create customize-image.sh
         run: |
@@ -162,7 +162,7 @@ jobs:
       
       - uses: armbian/build@main
         with:
-          armbian_token:     "${{ secrets.GITHUB_TOKEN }}"  # GitHub token
+          ##armbian_token:     "${{ secrets.GITHUB_TOKEN }}"  # GitHub token
           armbian_release:   "bookworm"                        # userspace
           armbian_target:    "build"                        # build=image, kernel=kernel
           armbian_board:     "rockpi-4bplus"                   # build target
