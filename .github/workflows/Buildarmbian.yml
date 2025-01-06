@@ -41,16 +41,16 @@ jobs:
           done < "$PACKAGES_FILE"
           EOF
 
-      - name: Clone Armbian build repository
-        run: |
-          echo "Should be source folder"
-          git clone --depth 1 https://github.com/armbian/build.git
+      ##- name: Clone Armbian build repository
+      ##  run: |
+      ##    echo "Should be source folder"
+      ##    git clone --depth 1 https://github.com/armbian/build.git
 
-      - name: CHECK Source level with build folder from armbian
-        run : |
-          ls -lha
-          echo "Should be build folder"
-          ls -lha build
+      ##- name: CHECK Source level with build folder from armbian
+      ##  run : |
+      ##    ls -lha
+      ##    echo "Should be build folder"
+      ##    ls -lha build
 
       - name: Create userpatches and userpatches/overlay
         run : |
@@ -63,7 +63,7 @@ jobs:
           ls -als
 
           # make folder tree. this will be visible in final image at tmp/overlay
-          mkdir -p build/userpatches/overlay
+          ##mkdir -p build/userpatches/overlay
 
       - name : Copy files to what will be tmp/overlay and create customize-image.sh
         run: |
@@ -137,32 +137,40 @@ jobs:
 
           ##chmod +x build/userpatches/customize-image.sh
           
-      - name: Configure build
-        run: |
-          cd build
-          ./compile.sh EXPERT=yes \
-            BOARD=rockpi-4bplus \
-            BRANCH=current \
-            RELEASE=bookworm \
-            BUILD_MINIMAL=no \
-            BUILD_DESKTOP=no \
-            KERNEL_CONFIGURE=no \
-            COMPRESS_OUTPUTIMAGE=xz \
-            IMAGE_XZ_COMPRESSION_RATIO=6 \
-            ENABLE_SSH=yes \
-            HOSTNAME=test_os
+      ##- name: Configure build
+      ##  run: |
+      ##    cd build
+      ##    ./compile.sh EXPERT=yes \
+      ##      BOARD=rockpi-4bplus \
+      ##      BRANCH=current \
+      ##      RELEASE=bookworm \
+      ##      BUILD_MINIMAL=no \
+      ##      BUILD_DESKTOP=no \
+      ##      KERNEL_CONFIGURE=no \
+      ##      COMPRESS_OUTPUTIMAGE=xz \
+      ##      IMAGE_XZ_COMPRESSION_RATIO=6 \
+      ##      ENABLE_SSH=yes \
+      ##      HOSTNAME=test_os
 
-      - name: We are at the top level
-        run: |
-          ls -lha
-          ls -lha build
-          ls -lha build/output
-          ls -lha build/output/images
-          ls -als build
-          
-      - name: Upload Armbian image
-        uses: actions/upload-artifact@v4
+      ##- name: We are at the top level
+      ##  run: |
+      ##    ls -lha
+      ##    ls -lha build
+      ##    ls -lha build/output
+      ##    ls -lha build/output/images
+      ##    ls -als build
+      
+      - uses: armbian/build@main
         with:
-          name: armbian-image
-          # we cd'd into build just above, this is run from that folder
-          path: build/output/images/*.xz
+          armbian_token:     "${{ secrets.GITHUB_TOKEN }}"  # GitHub token
+          armbian_release:   "bookworm"                        # userspace
+          armbian_target:    "build"                        # build=image, kernel=kernel
+          armbian_board:     "rockpi-4bplus"                   # build target
+          armbian_ui:        "minimal"
+      
+      ##- name: Upload Armbian image
+      ##  uses: actions/upload-artifact@v4
+      ##  with:
+      ##    name: armbian-image
+      ##    # we cd'd into build just above, this is run from that folder
+      ##    path: build/output/images/*.xz
