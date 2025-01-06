@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      ##- name: Checkout repository
-      ##  uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Add a script tot he custom files (this is for specific installs)
+      - name: Add a script to the custom files (this is for specific installs)
         run: |
           cat << 'EOF' > ./custom-pkg-list/00-install/00-run.sh
           #!/bin/bash
