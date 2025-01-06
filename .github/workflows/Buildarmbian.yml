@@ -67,11 +67,11 @@ jobs:
 
       - name : Copy files to what will be tmp/overlay and create customize-image.sh
         run: |
-          rsync -av custom-pkg-list build/userpatches/overlay
+          ##rsync -av custom-pkg-list build/userpatches/overlay
 
           # create customize-image.sh 'in line' and put in userpatches for build execution
-          cat > build/userpatches/customize-image.sh <<-EOF
-          #!/bin/bash          
+          ##cat > build/userpatches/customize-image.sh <<-EOF
+          ###!/bin/bash          
           # anything done in here is in to-be-finalized image, starting at root (ie \)
           
           # do we need to do apt-get update and/or install git, gcc, etc???
@@ -121,21 +121,21 @@ jobs:
           ## END OF WIFI CONFIG
           
           # fwiw, this is running as chroot, so dont need sudo
-          echo "This should be image root"
-          apt list | grep git
+          ##echo "This should be image root"
+          ##apt list | grep git
 
           echo "HERE WE ARE"
           pwd
           ls -als
-          ls -alsr tmp/overlay/custom-pkg-list
-          cp -a tmp/overlay/custom-pkg-list home
-          chmod +x home/custom-pkg-list/00-install/00-run.sh
-          apt-get update
-          apt-get install git -y
-          home/custom-pkg-list/00-install/00-run.sh
-          EOF
+          ##ls -alsr tmp/overlay/custom-pkg-list
+          ##cp -a tmp/overlay/custom-pkg-list home
+          ##chmod +x home/custom-pkg-list/00-install/00-run.sh
+          ##apt-get update
+          ##apt-get install git -y
+          ##home/custom-pkg-list/00-install/00-run.sh
+          ##EOF
 
-          chmod +x build/userpatches/customize-image.sh
+          ##chmod +x build/userpatches/customize-image.sh
           
       - name: Configure build
         run: |
@@ -144,7 +144,7 @@ jobs:
             BOARD=rockpi-4b \
             BRANCH=current \
             RELEASE=bookworm \
-            BUILD_MINIMAL=yes \
+            BUILD_MINIMAL=no \
             BUILD_DESKTOP=no \
             KERNEL_CONFIGURE=no \
             COMPRESS_OUTPUTIMAGE=xz \
